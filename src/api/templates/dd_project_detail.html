@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}{{ ddp.company_name }} — MAIS / T2{% endblock %}
+{% block content %}
+<section style="padding:var(--sp-5) 0">
+  <div class="container">
+    <div style="font-size:var(--fs-xs);color:var(--c-text-soft);letter-spacing:var(--ls-wide);text-transform:uppercase">DDP / 案件詳細</div>
+    <h1 style="font-family:'Noto Serif JP',serif;font-size:var(--fs-xl);color:var(--c-ink);margin:var(--sp-2) 0">{{ ddp.company_name }}</h1>
+    <p style="color:var(--c-text-soft);font-size:var(--fs-sm)"><code>{{ ddp.ddp_id }}</code> · {{ ddp.industry }} · ¥{{ "{:,}".format(ddp.revenue_jpy) }} · status: <strong style="color:var(--c-gold-dim)">{{ ddp.status|default("ingestion_pending") }}</strong></p>
+
+    <div style="margin-top:var(--sp-4);display:grid;grid-template-columns:repeat(3,1fr);gap:var(--sp-3)">
+      <div class="card"><h3 style="margin-top:0">chunks 抽出</h3><div style="font-family:'Noto Serif JP',serif;font-size:var(--fs-2xl);color:var(--c-gold-dim)">{{ chunk_count }}</div><div style="font-size:var(--fs-xs);color:var(--c-text-soft)">Docling chunk metadata</div></div>
+      <div class="card"><h3 style="margin-top:0">中堅 pattern hits</h3><div style="font-family:'Noto Serif JP',serif;font-size:var(--fs-2xl);color:{% if jp_hits %}var(--c-gold-dim){% else %}var(--c-text-soft){% endif %}">{{ jp_hits|length }}</div><div style="font-size:var(--fs-xs);color:var(--c-text-soft)"><a href="/dd-project/{{ ddp.ddp_id }}/jp-patterns" style="color:var(--c-gold-dim)">→ 詳細</a></div></div>
+      <div class="card"><h3 style="margin-top:0">Q-A 生成済</h3><div style="font-family:'Noto Serif JP',serif;font-size:var(--fs-2xl);color:var(--c-gold-dim)">{{ answers|length }}</div><div style="font-size:var(--fs-xs);color:var(--c-text-soft)"><a href="/dd-project/{{ ddp.ddp_id }}/questionnaire" style="color:var(--c-gold-dim)">→ 質問票</a></div></div>
+    </div>
+
+    {% if chunk_count == 0 %}
+    <div style="margin-top:var(--sp-4);padding:var(--sp-4);background:var(--c-gold-soft);border-left:3px solid var(--c-gold);border-radius:4px">
+      <h3 style="margin-top:0">VDR ingestion 未実施</h3>
+      <p style="font-size:var(--fs-sm);color:var(--c-text)">本案件の VDR 文書 (8 docs: PDF/Word/Excel/PPT 各 2 件) を Docling で chunk 化、 中堅 pattern + clause を自動検出します。</p>
+      <form action="/dd-project/{{ ddp.ddp_id }}/ingest" method="post" style="margin-top:var(--sp-2)">
+        <button type="submit" style="padding:var(--sp-2) var(--sp-4);background:var(--c-ink);color:var(--c-gold-bright);border:none;border-radius:4px;font-weight:700;cursor:pointer;font-family:inherit">ingestion 実行 (~10s)</button>
+      </form>
+    </div>
+    {% endif %}
+
+    {% if answers %}
+    <h2 style="font-family:'Noto Serif JP',serif;font-size:var(--fs-lg);color:var(--c-ink);margin-top:var(--sp-5)">生成済 Q-A pair</h2>
+    <table>
+      <thead><tr><th>Q ID</th><th>fit_label</th><th>Citation</th></tr></thead>
+      <tbody>
+      {% for a in answers %}
+        <tr><td><code>{{ a.question_id }}</code></td><td><span style="display:inline-block;padding:2px 8px;background:{% if a.fit_label=='high' %}var(--c-fit-high-bg);color:var(--c-fit-high){% elif a.fit_label=='medium' %}var(--c-fit-medium-bg);color:var(--c-fit-medium){% else %}var(--c-fit-low-bg);color:var(--c-fit-low){% endif %};border-radius:3px;font-weight:600">{{ a.fit_label }}</span></td><td>{{ a.citations|length }} 件</td></tr>
+      {% endfor %}
+      </tbody>
+    </table>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

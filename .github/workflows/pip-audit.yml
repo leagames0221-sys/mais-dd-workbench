@@ -1,0 +1,75 @@
+name: pip-audit
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "requirements*.txt"
+      - ".github/workflows/pip-audit.yml"
+  pull_request:
+    paths:
+      - "requirements*.txt"
+      - ".github/workflows/pip-audit.yml"
+  schedule:
+    - cron: "0 0 * * 1"  # weekly Monday 09:00 JST (00:00 UTC)
+  workflow_dispatch:
+
+jobs:
+  audit-week0:
+    runs-on: ubuntu-latest
+    name: audit requirements-week0 (active stack, fail-on-high)
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+      - name: Install pip-audit
+        run: pip install pip-audit
+      - name: Audit Week 0 active stack
+        run: pip-audit -r requirements-week0.txt --strict
+
+  audit-week1:
+    runs-on: ubuntu-latest
+    name: audit requirements-week1 (active stack, strict block)
+    # 2026-05-13 訂正: 旧 「informational only (continue-on-error: true)」 path は
+    # doctrine: client-no-recovery + doctrine: no-design-compromise literal 違反 (上場会社 受託で CVE 隠蔽)、
+    # cross-PJ template ((internal knowledge library)/agent-architecture/security/templates/python-ml-stack/)
+    # の Layer 2 standard literal 順守へ訂正
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+      - name: Install pip-audit
+        run: pip install pip-audit
+      - name: Audit Week 1 stack (strict, ADR-101 baseline)
+        run: pip-audit -r requirements-week1.txt --strict
+
+  audit-week2:
+    runs-on: ubuntu-latest
+    name: audit requirements-week2 (active stack, fail-on-high)
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+      - name: Install pip-audit
+        run: pip install pip-audit
+      - name: Audit Week 2 active stack
+        # sentence-transformers 5.4+ で transformers <6.0,>=4.41 に literal 拡張、
+        # transformers 5.0+ pin で CVE-2026-1839 を literal 削除完了 (2026-05-13)。
+        # audit-week2 を active stack 化、 新 CVE 検出時は fail-on-high で literal CI block。
+        run: pip-audit -r requirements-week2.txt --strict
+
+  audit-week4:
+    runs-on: ubuntu-latest
+    name: audit requirements-week4 (active stack, fail-on-high)
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+      - name: Install pip-audit
+        run: pip install pip-audit
+      - name: Audit Week 4 active stack (fastapi + uvicorn + jinja2 + cryptography 含)
+        run: pip-audit -r requirements-week4.txt --strict

@@ -1,0 +1,33 @@
+# mais-dd-workbench Week 2 active stack
+# Week 0/1 継承 + 5-stage hybrid pipeline + RAG citation infra
+# doctrine: external-source-audit audit 通過済 (ADR-101 inherit + ADR-103 + Week 2 追加 LlamaIndex)
+
+# ─── Week 0 + Week 1 継承 ─────
+faker>=25.0,<30.0
+python-dotenv>=1.0,<2.0
+pytest>=9.0.3,<10.0
+pytest-cov>=5.0,<7.0
+pydantic>=2.5,<3.0
+pip-audit>=2.7,<3.0
+docling>=2.0,<3.0
+reportlab>=4.4.10,<5.0
+
+# ─── Week 2: 5-stage hybrid pipeline (T1 ADR-005 inherit literal reuse) ─────
+# rank_bm25: Apache-2.0、 dorianbrown 公式、 600+ stars、 pure Python (T1 既採用)
+rank_bm25>=0.2,<1.0
+# sentence-transformers: Apache-2.0、 HuggingFace 公式、 25M+ DL/月 (T1 既採用)
+# dense embedding (multilingual-e5-large) + cross-encoder (ms-marco-MiniLM-L-12-v2) 両用
+# sentence-transformers 5.4.1+ で transformers <6.0.0,>=4.41.0 に literal 拡張 (PyPI verified)、
+# transformers 5.x 採用可能、 CVE-2026-1839 (transformers 4.x Trainer RCE) を literal 削除
+sentence-transformers>=5.4,<6.0
+# transformers: HuggingFace 公式、 Apache-2.0、 CVE-2026-1839 fix を 5.0+ で literal 取り込み
+transformers>=5.0,<6.0
+# faiss-cpu: MIT、 Meta 公式 (T1 既採用)、 数十万 scale で host PC 完走
+faiss-cpu>=1.8,<2.0
+# numpy: 既 Docling 経由で install 済、 明示 pin (T1 inherit)
+numpy>=1.26,<3.0
+
+# ─── Week 2: LlamaIndex CitationQueryEngine (ADR-101 audit ★★★) ─────
+# MIT、 49,361 stars (2026-05-12 verified)、 0 advisories、 古い CVE 全 fix 済 (≥ 0.14)
+# Hebbia 商用と literal 同等 source link back を OSS 構成
+llama-index-core>=0.14,<1.0

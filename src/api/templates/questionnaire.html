@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}質問票 — {{ ddp.company_name }}{% endblock %}
+{% block content %}
+<section style="padding:var(--sp-5) 0">
+  <div class="container">
+    <div style="font-size:var(--fs-xs);color:var(--c-text-soft);letter-spacing:var(--ls-wide);text-transform:uppercase">{{ ddp.company_name }} / 質問票</div>
+    <h1 style="font-family:'Noto Serif JP',serif;font-size:var(--fs-xl);color:var(--c-ink);margin:var(--sp-2) 0">DD 質問票 300 項目</h1>
+    <p style="color:var(--c-text-soft);font-size:var(--fs-sm)"><a href="/dd-project/{{ ddp.ddp_id }}">← {{ ddp.ddp_id }} 詳細</a> · 表示: {{ questions|length }} 件 (top 60 表示制限)</p>
+
+    <nav style="margin:var(--sp-4) 0;display:flex;gap:var(--sp-2)">
+      <a href="?" style="padding:var(--sp-1) var(--sp-3);background:{% if not category %}var(--c-ink);color:#fff{% else %}var(--c-line-soft);color:var(--c-ink){% endif %};border-radius:3px;text-decoration:none;font-size:var(--fs-sm)">全 300</a>
+      <a href="?category=financial" style="padding:var(--sp-1) var(--sp-3);background:{% if category=='financial' %}var(--c-ink);color:#fff{% else %}var(--c-line-soft);color:var(--c-ink){% endif %};border-radius:3px;text-decoration:none;font-size:var(--fs-sm)">財務 100</a>
+      <a href="?category=legal" style="padding:var(--sp-1) var(--sp-3);background:{% if category=='legal' %}var(--c-ink);color:#fff{% else %}var(--c-line-soft);color:var(--c-ink){% endif %};border-radius:3px;text-decoration:none;font-size:var(--fs-sm)">法務 100</a>
+      <a href="?category=business" style="padding:var(--sp-1) var(--sp-3);background:{% if category=='business' %}var(--c-ink);color:#fff{% else %}var(--c-line-soft);color:var(--c-ink){% endif %};border-radius:3px;text-decoration:none;font-size:var(--fs-sm)">事業 100</a>
+    </nav>
+
+    <table>
+      <thead><tr><th>Q ID</th><th>category</th><th>question</th><th>expected evidence</th><th></th></tr></thead>
+      <tbody>
+      {% for q in questions %}
+        <tr>
+          <td><code style="font-size:var(--fs-xs)">{{ q.q_id }}</code></td>
+          <td><span style="display:inline-block;padding:1px 6px;background:var(--c-line-soft);border-radius:3px;font-size:var(--fs-xs)">{{ q.category }}</span></td>
+          <td style="max-width:340px">{{ q.question_text }}</td>
+          <td style="font-size:var(--fs-xs);color:var(--c-text-soft)"><code>{{ q.expected_evidence_kind }}</code></td>
+          <td>
+            {% if q.q_id in answers_map %}
+              <span style="color:var(--c-gold-dim);font-weight:600">✓ {{ answers_map[q.q_id].fit_label }}</span>
+            {% else %}
+              <form action="/dd-project/{{ ddp.ddp_id }}/answer" method="post" style="margin:0">
+                <input type="hidden" name="q_id" value="{{ q.q_id }}">
+                <button type="submit" style="padding:2px 8px;background:var(--c-ink);color:var(--c-gold-bright);border:none;border-radius:3px;font-size:var(--fs-xs);cursor:pointer;font-family:inherit">AI 回答生成</button>
+              </form>
+            {% endif %}
+          </td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endblock %}

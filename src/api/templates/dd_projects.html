@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}案件一覧 — MAIS / T2{% endblock %}
+{% block content %}
+<section style="padding:var(--sp-5) 0">
+  <div class="container">
+    <h1 style="font-family:'Noto Serif JP',serif;font-size:var(--fs-xl);color:var(--c-ink);margin-bottom:var(--sp-2)">案件一覧</h1>
+    <p style="color:var(--c-text-soft);font-size:var(--fs-sm);margin-bottom:var(--sp-4)">担当: <code>{{ current_user }}</code> · 合成 demo 案件 {{ ddps|length }} 件</p>
+    <table>
+      <thead><tr><th>DDP ID</th><th>会社名</th><th>業種</th><th>売上</th><th>中堅 pattern</th><th>status</th><th></th></tr></thead>
+      <tbody>
+      {% for d in ddps %}
+        <tr>
+          <td><code>{{ d.ddp_id }}</code></td>
+          <td>{{ d.company_name }}</td>
+          <td>{{ d.industry }}</td>
+          <td>¥{{ "{:,}".format(d.revenue_jpy) }}</td>
+          <td>
+            {% if d.jp_patterns %}
+              {% for p in d.jp_patterns %}<span style="display:inline-block;padding:1px 6px;background:var(--c-gold-soft);border-radius:3px;font-size:var(--fs-xs);margin-right:2px">{{ p }}</span>{% endfor %}
+            {% else %}<span style="color:var(--c-text-soft)">clean</span>{% endif %}
+          </td>
+          <td>{{ d.status|default("ingestion_pending") }}</td>
+          <td><a href="/dd-project/{{ d.ddp_id }}" style="color:var(--c-gold-dim);font-weight:600">→ 詳細</a></td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endblock %}

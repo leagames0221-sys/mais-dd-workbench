@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}監査ログ — MAIS / T2{% endblock %}
+{% block content %}
+<section style="padding:var(--sp-5) 0">
+  <div class="container">
+    <h1 style="font-family:'Noto Serif JP',serif;font-size:var(--fs-xl);color:var(--c-ink);margin-bottom:var(--sp-2)">監査ログ</h1>
+    <p style="color:var(--c-text-soft);font-size:var(--fs-sm);margin-bottom:var(--sp-4)">全 vault access の literal 履歴 (ADR-007 layer 7 順守、 PoC 試作版 = append-only JSONL、 本番 = immutable S3 + CloudWatch alarm)</p>
+
+    {% if entries %}
+    <table>
+      <thead><tr><th>timestamp</th><th>action</th><th>item</th><th>requester</th><th>reason</th></tr></thead>
+      <tbody>
+      {% for e in entries %}
+        <tr>
+          <td style="font-family:'JetBrains Mono',monospace;font-size:var(--fs-xs)">{{ e.timestamp }}</td>
+          <td><span style="display:inline-block;padding:1px 6px;background:{% if e.action=='PUT' %}var(--c-gold-soft){% elif e.action=='GET' %}var(--c-line-soft){% else %}#e8e8e8{% endif %};border-radius:3px;font-size:var(--fs-xs);font-weight:600">{{ e.action }}</span></td>
+          <td><code style="font-size:var(--fs-xs)">{{ e.item_id }}</code></td>
+          <td>{{ e.requester }}</td>
+          <td style="color:var(--c-text-soft);font-size:var(--fs-xs)">{{ e.reason }}</td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <div class="card">
+      <p>監査ログ entry 0 件 (まだ vault access 未発生)。 案件詳細から ingestion 実行で literal log 生成されます。</p>
+    </div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}
