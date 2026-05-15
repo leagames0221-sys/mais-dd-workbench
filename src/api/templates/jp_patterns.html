@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}中堅 fit pattern — {{ ddp.company_name }}{% endblock %}
+{% block content %}
+<section style="padding:var(--sp-5) 0">
+  <div class="container">
+    <div style="font-size:var(--fs-xs);color:var(--c-text-soft);letter-spacing:var(--ls-wide);text-transform:uppercase">{{ ddp.company_name }} / 中堅日本企業 fit pattern</div>
+    <h1 style="font-family:'Noto Serif JP',serif;font-size:var(--fs-xl);color:var(--c-ink);margin:var(--sp-2) 0">中堅 fit pattern detector 結果</h1>
+    <p style="color:var(--c-text-soft);font-size:var(--fs-sm);margin-bottom:var(--sp-4)"><a href="/dd-project/{{ ddp.ddp_id }}">← {{ ddp.ddp_id }} 詳細</a> · MAIS literal 競合優位 core (海外発 generic DD AI が補足しづらい領域)</p>
+
+    {% if not hits %}
+      <div class="card">
+        <h3>該当 pattern 検出なし</h3>
+        <p>本案件では 同族経営 / 名義株 / オーナー私的経費 のいずれも literal 検出されませんでした (false-positive 抑制 verified、 clean 企業候補)。</p>
+      </div>
+    {% else %}
+      {% for h in hits %}
+      <div class="card" style="border-left:3px solid var(--c-gold);margin-bottom:var(--sp-3)">
+        <h3 style="margin-top:0;color:var(--c-gold-dim)">
+          {% if h.kind == "family_governance" %}🏛 同族経営 (family governance){% endif %}
+          {% if h.kind == "nominee_shareholder" %}🔄 名義株 (nominee shareholder){% endif %}
+          {% if h.kind == "owner_private_expense" %}💼 オーナー私的経費 (owner private expense){% endif %}
+        </h3>
+        <p style="font-size:var(--fs-sm)"><strong>confidence:</strong> <span style="font-family:'JetBrains Mono',monospace;color:var(--c-gold-dim);font-weight:700">{{ h.confidence }}</span> · <strong>JPP ID:</strong> <code style="font-size:var(--fs-xs)">{{ h.jpp_id }}</code></p>
+        <p style="font-size:var(--fs-sm);color:var(--c-text)"><strong>検出根拠:</strong> {{ h.notes }}</p>
+        {% if h.evidence_phrases %}
+        <p style="font-size:var(--fs-sm);color:var(--c-text)"><strong>literal phrase 抽出:</strong></p>
+        <ul style="font-size:var(--fs-sm)">
+          {% for ph in h.evidence_phrases %}<li><code>{{ ph }}</code></li>{% endfor %}
+        </ul>
+        {% endif %}
+        <p style="font-size:var(--fs-xs);color:var(--c-text-soft);margin-top:var(--sp-2)">関連 chunk 数: {{ h.evidence_chunk_ids|length }} 件</p>
+      </div>
+      {% endfor %}
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,75 @@
+# Security Master Layer 1 — credentials + secrets literal block
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+secrets/
+.credentials
+
+# Synthetic VDR data (large + repo 外保管)
+data/vdr_synthetic/**/*.pdf
+data/vdr_synthetic/**/*.docx
+data/vdr_synthetic/**/*.pptx
+data/vdr_synthetic/**/*.xlsx
+data/vdr_synthetic/**/*.xls
+data/vdr_synthetic/**/*.doc
+data/cache/
+data/audit/*.jsonl
+data/vault/*.enc
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv/
+venv/
+env/
+ENV/
+build/
+dist/
+*.egg-info/
+.eggs/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+.tox/
+
+# Model cache (HF / sentence-transformers / docling)
+.cache/
+~/.cache/huggingface/
+*.safetensors
+*.bin
+*.pth
+
+# Video pipeline output
+out_video/
+*.mp4
+*.webm
+*.wav
+*.srt
+
+# Third-party engine binaries (literal 大容量 + per-host install)
+# 例: .vendor/aivis-engine/ = TTS engine-Engine 1.2.0 standalone (~216MB)
+.vendor/
+
+# IDE / OS
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# Security Master telemetry (T1 学び: heartbeat path は実環境で internal/.*.heartbeat 形式)
+.security_telemetry.jsonl
+.security_heartbeat.json
+.security_heartbeat.jsonl
+internal/.git_secret_scan.heartbeat
+internal/.security_intercept.heartbeat
+internal-heartbeat-files
+internal-jsonl-files

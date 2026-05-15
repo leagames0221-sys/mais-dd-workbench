@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% block title %}MAIS / T2 DD 自動化 — PoC{% endblock %}
+{% block content %}
+<section class="hero" style="background:linear-gradient(180deg,var(--c-ink) 0%,var(--c-ink-soft) 100%);color:#fff;padding:var(--sp-6) 0;border-bottom:2px solid var(--c-gold);position:relative;overflow:hidden">
+  <div style="background-image:url('/static/hero-rings.svg');background-position:right -180px bottom -120px;background-repeat:no-repeat;background-size:780px 780px;position:absolute;inset:0;pointer-events:none;opacity:.55"></div>
+  <div class="container" style="position:relative">
+    <div style="font-size:var(--fs-sm);letter-spacing:var(--ls-wide);color:var(--c-gold-soft);text-transform:uppercase;margin-bottom:var(--sp-2)">MAIS / T2 · DD 自動化</div>
+    <h1 style="font-family:'Noto Serif JP',serif;font-size:var(--fs-2xl);color:#fff;line-height:var(--lh-tight);margin-bottom:var(--sp-3);max-width:780px">数百項目の DD 質問を、<br>分単位で source 文書まで link back。</h1>
+    <p style="font-size:var(--fs-md);color:#e8dcc0;line-height:var(--lh-base);max-width:660px;margin-bottom:var(--sp-4)">VDR の Excel / Word / PowerPoint / PDF を AI が直接 ingestion、 中堅日本企業固有の同族経営 / 名義株 / オーナー私的経費 を自動 surface。 全回答が source 文書の該当 chunk まで link back、 監査可能 architecture。</p>
+    {% if not current_user %}
+    <form action="/mock-signin" method="post" style="display:flex;gap:var(--sp-2);align-items:center">
+      <input type="text" name="user_id" placeholder="user_id (例: takada)" required style="padding:var(--sp-2) var(--sp-3);border-radius:4px;border:1px solid var(--c-gold);background:rgba(255,255,255,.08);color:#fff;font-family:inherit;font-size:var(--fs-base)">
+      <button type="submit" style="padding:var(--sp-2) var(--sp-4);background:var(--c-gold-bright);color:var(--c-ink);border:none;border-radius:4px;font-weight:700;cursor:pointer;font-family:inherit;letter-spacing:var(--ls-base)">担当者ログイン (Mock)</button>
+    </form>
+    {% else %}
+    <a href="/dd-projects" style="display:inline-block;padding:var(--sp-3) var(--sp-4);background:var(--c-gold-bright);color:var(--c-ink);border-radius:4px;font-weight:700;text-decoration:none">案件一覧へ →</a>
+    {% endif %}
+  </div>
+</section>
+
+<section style="background:var(--c-ink-soft);color:#fff;padding:var(--sp-5) 0;border-bottom:1px solid var(--c-gold-dim)">
+  <div class="container" style="display:grid;grid-template-columns:repeat(4,1fr);gap:var(--sp-4)">
+    <div><div style="font-family:'Noto Serif JP',serif;font-size:var(--fs-2xl);color:var(--c-gold-bright);font-weight:700">-50%</div><div style="font-size:var(--fs-xs);color:#bca87a;margin-top:var(--sp-1)">DD 工数 削減<br><span style="opacity:.7">(M's DD 公式実績)</span></div></div>
+    <div><div style="font-family:'Noto Serif JP',serif;font-size:var(--fs-2xl);color:var(--c-gold-bright);font-weight:700">週→日</div><div style="font-size:var(--fs-xs);color:#bca87a;margin-top:var(--sp-1)">DD サイクル<br><span style="opacity:.7">(PE benchmark)</span></div></div>
+    <div><div style="font-family:'Noto Serif JP',serif;font-size:var(--fs-2xl);color:var(--c-gold-bright);font-weight:700">300+</div><div style="font-size:var(--fs-xs);color:#bca87a;margin-top:var(--sp-1)">DD 質問テンプレ<br><span style="opacity:.7">(財務/法務/事業)</span></div></div>
+    <div><div style="font-family:'Noto Serif JP',serif;font-size:var(--fs-2xl);color:var(--c-gold-bright);font-weight:700">7-layer</div><div style="font-size:var(--fs-xs);color:#bca87a;margin-top:var(--sp-1)">security 設計<br><span style="opacity:.7">(個人情報保護法 適合)</span></div></div>
+  </div>
+</section>
+
+<section style="padding:var(--sp-5) 0">
+  <div class="container">
+    <h2 style="font-family:'Noto Serif JP',serif;font-size:var(--fs-xl);color:var(--c-ink);margin-bottom:var(--sp-4)">本番 scale (client infrastructure deploy 想定)</h2>
+    <p style="font-size:var(--fs-base);color:var(--c-text);line-height:var(--lh-base);max-width:780px;margin-bottom:var(--sp-3)">
+      <strong style="color:var(--c-gold-dim)">同 5-stage AI architecture が そのまま 500+ docs / 案件 を literal 処理</strong>。<br>
+      PoC で機能完成度 ★★★ 確立、 本番 deploy 時は 設備のみ scale up:
+    </p>
+    <table>
+      <thead><tr><th>軸</th><th>PoC (現状)</th><th>本番 (client infrastructure deploy 後)</th></tr></thead>
+      <tbody>
+        <tr><td><strong>量</strong></td><td>40 docs / 5 案件 (機能 verify)</td><td>500-1000+ docs / 案件 (実 M&A VDR scale)</td></tr>
+        <tr><td><strong>速度</strong></td><td>1 分未満 / 案件 ingestion</td><td>30-60 分 / 案件 (人手 DD 数週間 → 数千倍 高速化)</td></tr>
+        <tr><td><strong>精度</strong></td><td>MockProvider (structure verify)</td><td>real LLM swap で MDPI 87% accuracy 級 (1 file 1 行 変更で literal 切替)</td></tr>
+        <tr><td><strong>data</strong></td><td>合成 VDR + Fernet vault</td><td>real VDR (Datasite/Intralinks 連携) + PostgreSQL + KMS</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+{% if ddps %}
+<section style="background:var(--c-line-soft);padding:var(--sp-5) 0;border-top:1px dashed var(--c-line)">
+  <div class="container">
+    <h2 style="font-family:'Noto Serif JP',serif;font-size:var(--fs-xl);color:var(--c-ink);margin-bottom:var(--sp-3)">PoC demo: 合成 M&A 案件 {{ ddps|length }} 件</h2>
+    <table>
+      <thead><tr><th>DDP ID</th><th>業種</th><th>売上</th><th>中堅 pattern</th><th>status</th></tr></thead>
+      <tbody>
+      {% for d in ddps %}
+        <tr>
+          <td><code>{{ d.ddp_id }}</code></td>
+          <td>{{ d.industry }}</td>
+          <td>¥{{ "{:,}".format(d.revenue_jpy) }}</td>
+          <td>{% if d.jp_patterns %}{{ d.jp_patterns|join(", ") }}{% else %}<span style="color:var(--c-text-soft)">clean</span>{% endif %}</td>
+          <td>{{ d.status|default("ingestion_pending") }}</td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endif %}
+{% endblock %}
