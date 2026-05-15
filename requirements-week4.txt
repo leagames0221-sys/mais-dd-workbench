@@ -24,7 +24,7 @@ llama-index-core>=0.14,<1.0
 # - python-multipart: MIT、 file upload (Document upload page で必須)
 # - itsdangerous: BSD-3、 SessionMiddleware 内部利用
 fastapi>=0.115,<1.0
-uvicorn[standard]>=0.30,<1.0
+uvicorn[standard]>=0.47.0,<1.0
 jinja2>=3.1,<4.0
 python-multipart>=0.0.9,<1.0
 itsdangerous>=2.0,<3.0
