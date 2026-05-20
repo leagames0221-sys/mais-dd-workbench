@@ -19,8 +19,6 @@ DD on a mid-market Japanese deal touches 40+ documents, hundreds of questions, a
 - Extracts contract clauses (Change of Control, Limitation of Liability, MFN) using CUAD/ACORD pattern library
 - Surfaces Japanese mid-market specific patterns: family ownership, nominee shares, owner personal expenses
 
-Reported industry benchmarks: **DD effort -50%** (Clarum / M's DD), **DD cycle weeks → days** (PE benchmark).
-
 ---
 
 ## Architecture
