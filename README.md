@@ -11,7 +11,7 @@
 
 ## 30-second pitch
 
-DD on a mid-market Japanese deal touches 40+ documents, hundreds of questions, and a 2-week clock. Most of that time is humans hunting for which clause in which file answers which question.
+DD on a mid-market Japanese deal typically touches dozens of documents and a wide-ranging question list under a tight clock. Most of that time is humans hunting for which clause in which file answers which question.
 
 **MAIS DD Workbench** automates the hunt:
 - Ingests Excel / Word / PowerPoint / PDF (incl. OCR + vision) via Docling
