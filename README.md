@@ -50,6 +50,19 @@ DD on a mid-market Japanese deal typically touches dozens of documents and a wid
 
 ---
 
+## Why this is distinct (existing alternatives + delta)
+
+Two adjacent tool categories address contract DD in 2026, but neither combines Japanese mid-market pattern detection with a citation-link-back surface on a free / consumer-laptop tier:
+
+- **Enterprise legal-tech DD platforms** (Kira Systems / Luminance / Della / Datasite Diligence) — extract clauses from contracts with high recall, but priced for enterprise budgets and trained primarily on US/EU contract corpora; Japanese mid-market specifics (family ownership, nominee shares, owner personal expenses, banking covenant fluency) are not first-class detectors.
+- **Generic AI document tools** (ChatGPT + manual prompting / Claude file upload / Notion AI) — answer questions about uploaded files but do not return page / cell / bbox citation link-backs that an M&A counsel can attach to a DD report, and have no domain-specific clause taxonomy (CUAD / ACORD).
+
+MAIS DD Workbench layers Docling ingestion + CUAD/ACORD clause extraction + JP mid-market pattern detector + page/cell/bbox citation link-back, so a DD analyst can answer hundreds of questions with audit-grade source provenance.
+
+**Target user**: M&A advisory firms + Japanese mid-market DD analysts + corporate legal counsel running the contract-review portion of due diligence under a tight deal clock.
+
+---
+
 ## Architecture
 
 ```
@@ -193,6 +206,40 @@ ANTHROPIC_MODEL=claude-sonnet-4-6       # whichever model the engagement contrac
 ```
 
 Docling ingestion + chunking + 5-stage retrieval + citation link-back all run on tier 1 alone. The LLM tier is only consulted at the final answer-synthesis step — every prior stage (chunk → embed → retrieve → cite) ships even when the LLM tier is offline.
+
+---
+
+## PoC status — what is live vs deferred
+
+This is a **PoC portfolio** demonstrating the DD-automation surface end to end. Current implementation status:
+
+**✅ Live in PoC** (active code paths, deterministic, no external API needed):
+- Docling ingestion (Excel / Word / PowerPoint / PDF + OCR + vision)
+- Paragraph-aware chunking with overlap
+- 5-stage retrieval (BM25 + dense + RRF + cross-encoder + late LLM rerank)
+- Citation link-back to page / cell / bbox in source files
+- CUAD/ACORD clause extraction (Change of Control, Limitation of Liability, MFN, etc.)
+- Japanese mid-market pattern detector (family ownership, nominee shares, owner personal expenses)
+- 47 pytest cases passing
+
+**⏳ Deferred to integration phase** (1-file swap paths defined, contracts stable):
+- LLM-driven answer synthesis — `MockProvider` returns deterministic templated outputs; `src/llm/provider.py` ships the `LLMProvider` Protocol with a single `default_provider()` swap point. Real Claude / Gemini / Ollama wiring is one file changed, zero refactor across the retrieval stack.
+- Real VDR connector — fixtures use a synthetic映像制作 case directory; production wiring needs a customer-side VDR API client (Datasite / Intralinks / SharePoint VDR mode).
+- Multilingual clause taxonomy expansion — CUAD/ACORD currently English-centric; Japanese clause name normalization for `重大事業承継条項` / `株主間契約` etc. is a domain-knowledge add deferred to integration phase.
+
+**Rationale**: this scoping lets the repo demonstrate ingestion + retrieval + citation shape on a laptop without paid API keys. The retrieval pipeline (Stages 1-4) is fully deterministic, so a DD analyst can verify the source-document link-back surface without ever invoking an LLM. The Protocol abstraction for the LLM is itself the portfolio claim — adding real Claude does not require refactoring callers under `src/retrieval/` or `src/extraction/`.
+
+---
+
+## What this exercise validated
+
+Three things turned out to be worth defending in this PoC.
+
+**First, the citation link-back is the audit-grade artifact.** Every answer the workbench produces carries a page / cell / bbox citation back to the source document, deterministically computed during Docling ingestion and preserved through chunking + retrieval. An M&A counsel can attach the citation directly to a DD report and a reviewer can verify against the original VDR file — the LLM stage cannot fabricate citations because the retrieval stage emits them before any LLM call.
+
+**Second, the 5-stage retrieval pipeline is tuned for Japanese mid-market contract language.** BM25 on kanji-heavy clause headings + dense embeddings on body text + RRF fusion captures the sparse + dense complementarity that Japanese business contracts exhibit. Stages 1-4 run without any LLM, so the retrieval surface is reproducible from a clean checkout against the synthetic VDR fixture corpus.
+
+**Third, the PoC stops where the maintained alternatives start.** Kira Systems / Luminance / Della / Datasite Diligence remain the right call for enterprise-scale DD with thousands of contracts and dedicated training budgets. Generic AI tools (ChatGPT + manual upload / Claude file mode) remain reasonable for one-off questions where citation provenance is not required. What MAIS DD Workbench adds is the auditable retrieval + citation pattern for Japanese mid-market deals that an advisory firm can deploy themselves — wired and tested at 47 pytest cases against a synthetic VDR corpus, runnable on a consumer laptop with zero monthly cost. The PoC status section above is explicit about which integration points (LLM answer synthesis, VDR connector, multilingual clause taxonomy) are live versus deferred.
 
 ---
 
