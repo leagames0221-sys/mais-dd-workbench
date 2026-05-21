@@ -132,16 +132,18 @@ def _scenes_factory() -> list[Scene]:
         p.wait_for_load_state("networkidle")
 
     def s11(p):
-        # 1 質問の AI 回答生成 button click (legal 系の Change of Control 質問が含まれる)
-        # 1 番目 の literal 「AI 回答生成」 button をクリック
-        # AI pipeline 処理は MockProvider でも 5-stage + Vault encrypt 等で 30-60s かかる、 timeout 延長
-        p.locator("button:has-text('AI 回答生成')").first.click(timeout=90000)
-        p.wait_for_url(f"**/dd-project/{DEMO_DDP}/questionnaire**", timeout=90000)
-        p.wait_for_load_state("networkidle", timeout=60000)
+        # narration 「AI 既回答済 8 件 該当度 ラベル付き」 を 視覚化 = dd-project detail へ戻り 生成済 Q-A table 提示
+        p.goto(f"{UVICORN_URL}/dd-project/{DEMO_DDP}")
+        p.wait_for_load_state("networkidle")
+        # 「生成済 Q-A pair」 table へ scroll (fit_label 列 medium/low/high 表示が narration と一致)
+        p.evaluate(
+            "[...document.querySelectorAll('h2')].find(h => h.textContent.includes('生成済 Q-A pair'))"
+            "?.scrollIntoView({behavior: 'smooth', block: 'start'})"
+        )
 
     def s12(p):
-        # ✓ mark 確認 (回答済 表示)
-        p.evaluate("window.scrollTo({top: 200, behavior: 'smooth'})")
+        # Q-A table を 数行分 ゆっくり scroll、 fit_label + citation 列 を 視覚的に hold
+        p.evaluate("window.scrollBy({top: 180, behavior: 'smooth'})")
 
     def s13(p):
         # 監査ログ
@@ -174,13 +176,13 @@ def _scenes_factory() -> list[Scene]:
         Scene("S4", 5.0, s4, "担当者としてログインします。"),
         Scene("S5", 5.5, s5, "合成案件5件が表示されます。"),
         Scene("S6", 5.5, s6, "映像制作業界の案件を選びます。"),
-        Scene("S7", 8.0, s7, "データルームの書類8件をAIが細かく分解します。"),
-        Scene("S8", 10.0, s8, "71個の文章ブロックを抽出して、要注意サインを自動検出します。"),
+        Scene("S7", 8.0, s7, "データルームの書類8件は、AIが71件の文章ブロックに既に分解済です。"),
+        Scene("S8", 10.0, s8, "71件のブロックから、中堅企業特有の要注意サインを2件、自動検出済です。"),
         Scene("S9", 7.0, s9, "同族経営と名義株の兆候が検出されました。"),
-        Scene("S10", 7.5, s10, "次に、300項目の法務質問リストを表示します。"),
-        Scene("S11", 7.0, s11, "経営権移動条項についてAIが自動回答します。"),
-        Scene("S12", 9.0, s12, "元の書類のどこに書いてあるかまで表示。該当度ラベル付きです。"),
-        Scene("S13", 8.0, s13, "全ての操作履歴が改ざん不能なログに記録されます。"),
+        Scene("S10", 7.5, s10, "法務質問は全300項目、AIの回答待ちリストです。"),
+        Scene("S11", 7.0, s11, "経営権移動条項を含む8件は、AIが該当度ラベル付きで既に回答済です。"),
+        Scene("S12", 9.0, s12, "fit_labelで該当度を表示、元書類への引用5件もリンク back されます。"),
+        Scene("S13", 8.0, s13, "全てのアクセス履歴は、改ざん不能な追記専用ログに記録されます。"),
         Scene("S14", 7.0, s14, "中身が見えないAIではなく、監査可能な仕組みです。"),
         Scene("S15", 8.5, s15, "PoCで機能完成。設備だけ拡張で本番へ移行できます。"),
         Scene("S16", 5.0, s16, "全機能動作確認済です。"),

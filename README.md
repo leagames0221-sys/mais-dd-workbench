@@ -30,7 +30,7 @@ This repo specifically demonstrates: Docling ingestion + chunking + 5-stage retr
 
 End-to-end demo of the DD Q-A flow — landing → sign-in → DD project list (5 synthetic cases) → 映像制作 case → Docling ingestion (71 chunks extracted) → JP patterns hit (family ownership / nominee shareholder) → legal questionnaire (300+ items) → 1-question AI answer with citation link-back → audit log → landing 本番 scale. Japanese narration by [AivisSpeech](https://aivis-project.com/) (まお おちついた, Style-Bert-VITS2), 1920×1080 H.264.
 
-> [▶️ **mais_dd_workbench_demo.mp4**](out_video/mais_dd_workbench_demo.mp4) — 111.07 s · 6.8 MB · 16 scenes with burned-in SRT subtitles.
+> [▶️ **mais_dd_workbench_demo.mp4**](out_video/mais_dd_workbench_demo.mp4) — 94.33 s · 6.6 MB · 16 scenes with burned-in SRT subtitles.
 
 <video src="out_video/mais_dd_workbench_demo.mp4" controls width="100%"></video>
 
