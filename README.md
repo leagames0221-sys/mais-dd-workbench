@@ -128,12 +128,42 @@ uvicorn src.api.app:app --reload --port 8000
 
 ## Configuration (env)
 
+The workbench ships with a **3-tier LLM swap path** for the DD Q-A engine. Pick the tier that matches your environment — no env edits are needed for tier 1 (PoC default).
+
+### Tier 1 — PoC default (zero cost, zero credit card, runs offline)
+
 ```bash
-ANTHROPIC_API_KEY=sk-ant-...           # required for LLM-driven answers
-VAULT_KEY=<fernet key>                  # contact info vault
+# No LLM env vars required. MockProvider is the default; Docling ingestion +
+# 5-stage retrieval + citation link-back all work on deterministic templated
+# answers without any external API call.
+VAULT_KEY=<fernet key>                  # contact info vault (always required)
 SYNTHETIC_SEED=20260513
 DATA_DIR=./data
 ```
+
+### Tier 2 — Local LLM swap (still zero cost, zero credit card; uses your own GPU/CPU)
+
+For developers / customers who want real LLM-driven answers without paid APIs. Requires [Ollama](https://ollama.com/) running locally with a model pulled (e.g. `ollama pull qwen2.5:7b`).
+
+```bash
+LLM_PROVIDER=ollama                     # switches default_provider() to Ollama (1-file swap point in src/api/)
+OLLAMA_BASE_URL=http://localhost:11434  # Ollama default
+OLLAMA_MODEL=qwen2.5:7b                 # any local model the Q-A prompt format supports
+# ... plus the always-required vars from tier 1
+```
+
+### Tier 3 — Customer / production swap (paid API; the only tier that touches credit-card-backed services)
+
+For customer deployments where higher answer quality or hosted-model SLA is required. **This is the only place credit-card-backed services enter the system** — paste the customer's key here and nothing else changes.
+
+```bash
+LLM_PROVIDER=claude                     # or "gemini" / future provider
+ANTHROPIC_API_KEY=sk-ant-...            # paste customer's key here (tier 1 + tier 2 never read this var)
+ANTHROPIC_MODEL=claude-sonnet-4-6       # whichever model the engagement contract specifies
+# ... plus the always-required vars from tier 1
+```
+
+Docling ingestion + chunking + 5-stage retrieval + citation link-back all run on tier 1 alone. The LLM tier is only consulted at the final answer-synthesis step — every prior stage (chunk → embed → retrieve → cite) ships even when the LLM tier is offline.
 
 ---
 
