@@ -26,6 +26,18 @@ This repo specifically demonstrates: Docling ingestion + chunking + 5-stage retr
 
 ---
 
+## 🎬 Demo walkthrough (~2-minute narrated video)
+
+End-to-end demo of the DD Q-A flow — landing → sign-in → DD project list (5 synthetic cases) → 映像制作 case → Docling ingestion (71 chunks extracted) → JP patterns hit (family ownership / nominee shareholder) → legal questionnaire (300+ items) → 1-question AI answer with citation link-back → audit log → landing 本番 scale. Japanese narration by [AivisSpeech](https://aivis-project.com/) (まお おちついた, Style-Bert-VITS2), 1920×1080 H.264.
+
+> [▶️ **mais_dd_workbench_demo.mp4**](out_video/mais_dd_workbench_demo.mp4) — 111.07 s · 6.8 MB · 16 scenes with burned-in SRT subtitles.
+
+<video src="out_video/mais_dd_workbench_demo.mp4" controls width="100%"></video>
+
+**Reproducible pipeline** ([scripts/produce_video.py](scripts/produce_video.py), [requirements-video.txt](requirements-video.txt)) — action-then-narration timing model: each scene measures Playwright action elapsed time then plays narration on the settled destination page. All synthetic VDR data, zero real PII, zero paid API.
+
+---
+
 ## 30-second pitch
 
 DD on a mid-market Japanese deal typically touches dozens of documents and a wide-ranging question list under a tight clock. Most of that time is humans hunting for which clause in which file answers which question.
