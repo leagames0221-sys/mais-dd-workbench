@@ -31,7 +31,7 @@ itsdangerous>=2.0,<3.0
 
 # Week 4: Vault Pattern
 # cryptography: Apache-2.0、 CVE-2026-26007 + CVE-2026-34073 fix 込み (T1 a34d27f literal 適用)
-cryptography>=46.0.6,<47.0
+cryptography>=48.0.0,<49.0
 
 # Week 4: HTTP client (テスト用)
 httpx>=0.27,<1.0
