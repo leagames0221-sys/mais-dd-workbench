@@ -25,4 +25,4 @@ cryptography>=46.0.6,<47.0
 playwright>=1.40,<2.0
 
 # requests は VOICEVOX HTTP API 呼出用 (公式 PSF、 既 sentence-transformers の transitive で install 済 version range と整合)
-requests>=2.31,<3.0
+requests>=2.34.2,<3.0
