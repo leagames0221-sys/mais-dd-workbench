@@ -19,7 +19,7 @@ jobs:
     runs-on: ubuntu-latest
     name: audit requirements-week0 (active stack, fail-on-high)
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - uses: actions/setup-python@v6
         with:
           python-version: "3.11"
@@ -36,7 +36,7 @@ jobs:
     # cross-PJ template
     # の Layer 2 standard literal 順守へ訂正
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - uses: actions/setup-python@v6
         with:
           python-version: "3.11"
@@ -49,7 +49,7 @@ jobs:
     runs-on: ubuntu-latest
     name: audit requirements-week2 (active stack, fail-on-high)
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - uses: actions/setup-python@v6
         with:
           python-version: "3.11"
@@ -65,7 +65,7 @@ jobs:
     runs-on: ubuntu-latest
     name: audit requirements-week4 (active stack, fail-on-high)
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - uses: actions/setup-python@v6
         with:
           python-version: "3.11"
